@@ -1,5 +1,12 @@
 const express = require("express")
+const mongoose = require("mongoose")
 const booksRoutes = require("./routes/books")
+
+mongoose.connect("mongodb+srv://jzucher:I33qXryVTfIyKnMW@cluster0.vdm32en.mongodb.net/?retryWrites=true&w=majority",
+  { useNewUrlParser: true,
+    useUnifiedTopology: true })
+  .then(() => console.log('Connexion à MongoDB réussie !'))
+  .catch(() => console.log('Connexion à MongoDB échouée !'))
 
 const app = express()
 
