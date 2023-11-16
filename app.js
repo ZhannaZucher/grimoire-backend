@@ -2,6 +2,7 @@ require('dotenv').config()
 const express = require("express")
 const mongoose = require("mongoose")
 const booksRoutes = require("./routes/books")
+const userRoutes = require("./routes/user")
 
 mongoose.connect(`mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PWD}@cluster0.vdm32en.mongodb.net/?retryWrites=true&w=majority`,
   { useNewUrlParser: true,
@@ -23,5 +24,6 @@ app.use((req, res, next) => {
 })
 
 app.use("/api/books", booksRoutes)
+app.use("/api/auth", userRoutes)
 
 module.exports = app
