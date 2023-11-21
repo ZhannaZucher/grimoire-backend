@@ -2,11 +2,12 @@ const express =require("express")
 const router = express.Router()
 const booksCtrl = require("../controllers/books")
 const auth = require("../middleware/auth")
-const multer = require('../middleware/multer-config')
+const multer = require("../middleware/multer-config")
+const imgResize = require("../middleware/sharp-config")
 
-router.post("/", auth, multer, booksCtrl.createBook)
+router.post("/", auth, multer, imgResize, booksCtrl.createBook)
 
-router.put("/:id", auth, multer, booksCtrl.modifyBook)
+router.put("/:id", auth, multer, imgResize, booksCtrl.modifyBook)
 
 router.delete("/:id", auth, booksCtrl.deleteBook)
 
