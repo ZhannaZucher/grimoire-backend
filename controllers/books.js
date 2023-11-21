@@ -1,4 +1,5 @@
 const Book = require("../models/Book")
+const fs = require("fs")
 
 exports.createBook = (req, res, next) => {
 	const bookObject = JSON.parse(req.body.book)
@@ -42,6 +43,25 @@ exports.modifyBook = (req, res, next) => {
 	.catch(error => res.status(400).json({error}))
 }
 
+exports.deleteBook = (req, res, next) => {
+	Book
+	.findOne({_id: req.params.id})
+	.then(book => {
+		if (book.userId != req.auth.userId) {
+			res.status(401).json({message: 'Not authorized'})
+		} else {
+			const filename = book.imageUrl.split('/images/')[1]
+			fs.unlink(`images/${filename}`, () => {
+				Book
+				.deleteOne({_id: req.params.id})
+				.then(() => { res.status(200).json({message: 'Object deleted'})})
+            .catch(error => res.status(401).json({ error }))
+			})
+		}
+	})
+	.catch(error => res.status(500).json({error}))
+}
+
 exports.getOneBook = (req, res, next) => {
 	Book
 	.findOne({_id: req.params.id})
@@ -50,41 +70,6 @@ exports.getOneBook = (req, res, next) => {
 }
 
 exports.getAllBooks = (req, res, next) => {
-	// mock DB
-	// const books = [
-	// 	{
-	// 		userId: "qsomihvqios",
-	// 		title: "Vivre vite",
-	// 		author: "Brigitte Giraud",
-	// 		imageUrl: "https://cdn.pixabay.com/photo/2019/06/11/18/56/camera-4267692_1280.jpg",
-	// 		year: 2022,
-	// 		genre: "roman",
-	// 		ratings: [
-	// 			{
-	// 			userId: "qsomihvqios",
-	// 			grade: 5
-	// 			}
-	// 		],
-	// 		averageRating: 5
-	// 	},
-	// 	{
-	// 		userId: "oeihfzeomoihi",
-	// 		title: "Triste tigre",
-	// 		author: "Neige Sinno",
-	// 		imageUrl: "https://cdn.pixabay.com/photo/2019/06/11/18/56/camera-4267692_1280.jpg",
-	// 		year: 2020,
-	// 		genre: "roman",
-	// 		ratings: [
-	// 			{
-	// 			userId: "oeihfzeomoihi",
-	// 			grade: 4
-	// 			}
-	// 		],
-	// 		averageRating: 4
-	// 	},
-	// ]
-	// res.status(200).json(books)
-
 	Book
 	.find()
 	.then(books => res.status(200).json(books))
