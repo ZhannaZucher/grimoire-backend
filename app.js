@@ -5,7 +5,7 @@ const booksRoutes = require("./routes/books")
 const userRoutes = require("./routes/user")
 const path = require('path')
 
-mongoose.connect(`mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PWD}@cluster0.vdm32en.mongodb.net/?retryWrites=true&w=majority`,
+mongoose.connect(`mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PWD}@${process.env.MONGODB_DOMAIN}`,
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
