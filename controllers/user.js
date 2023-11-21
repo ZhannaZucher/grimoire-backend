@@ -26,7 +26,7 @@ exports.login = (req, res, next) => {
                return res.status(401).json({ error: "Invalid credentials" })
            }
            bcrypt.compare(req.body.password, user.password)
-               .then(valid => {
+                .then(valid => {
                    if (!valid) {
                        return res.status(401).json({ error: "Invalid credentials" })
                    }
