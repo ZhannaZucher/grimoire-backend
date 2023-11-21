@@ -78,3 +78,24 @@ exports.getAllBooks = (req, res, next) => {
 	.then(books => res.status(200).json(books))
 	.catch(error => res.status(400).json({error}))
 }
+
+exports.addBookRating = (req, res, next) => {
+	
+	Book
+	.findOne({_id: req.params.id})
+	.then((book) => {
+		const alreadyRatedByCurrentUser = book.ratings.find((rating) => rating.userId == req.auth.userId)
+		if (alreadyRatedByCurrentUser) {
+			res.status(401).json({error: "Already rated"})
+		} else {
+			book.ratings.push({userId: req.auth.userId, grade: req.body.rating})
+
+			book
+			.save()
+			.then(() => res.status(200).json({message: "Book Rated"}))
+			.catch(error => res.status(400).json({error}))
+		}
+		
+	})
+	.catch(error => res.status(404).json({error}))
+}

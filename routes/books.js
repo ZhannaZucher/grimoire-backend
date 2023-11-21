@@ -7,6 +7,8 @@ const imgResize = require("../middleware/sharp-config")
 
 router.post("/", auth, multer, imgResize, booksCtrl.createBook)
 
+router.post("/:id/rating", auth, booksCtrl.addBookRating)
+
 router.put("/:id", auth, multer, imgResize, booksCtrl.modifyBook)
 
 router.delete("/:id", auth, booksCtrl.deleteBook)
