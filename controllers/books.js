@@ -79,23 +79,28 @@ exports.getAllBooks = (req, res, next) => {
 	.catch(error => res.status(400).json({error}))
 }
 
-exports.addBookRating = (req, res, next) => {
-	
-	Book
-	.findOne({_id: req.params.id})
-	.then((book) => {
-		const alreadyRatedByCurrentUser = book.ratings.find((rating) => rating.userId == req.auth.userId)
-		if (alreadyRatedByCurrentUser) {
-			res.status(401).json({error: "Already rated"})
-		} else {
-			book.ratings.push({userId: req.auth.userId, grade: req.body.rating})
+exports.addBookRating = (req, res, next) => {  
+    Book
+	 .findOne({ _id: req.params.id })
+    .then(book => {
+		//check if the current user has already rated this book
+      const alreadyRatedByCurrentUser = book.ratings.find(rating => rating.userId === req.auth.userId)
 
-			book
-			.save()
-			.then(() => res.status(200).json({message: "Book Rated"}))
-			.catch(error => res.status(400).json({error}))
-		}
-		
-	})
-	.catch(error => res.status(404).json({error}))
+      if (alreadyRatedByCurrentUser) {
+        return res.status(401).json({ error: "Already rated" })
+      } 
+
+		//update the book with user's new rating
+      book.ratings.push({userId: req.auth.userId, grade: req.body.rating})
+      //update the book's average rating
+		const totalRatings = book.ratings.reduce((sum, value) => sum + value.grade, 0)
+		// book.averageRating = Math.round(totalRatings / book.ratings.length)
+		book.averageRating = Number((totalRatings / book.ratings.length).toFixed(1))
+
+      book
+		.save()
+      .then(() => res.status(200).json(book))
+      .catch(error => res.status(400).json({ error }))
+    })
+    .catch(error => res.status(400).json({ error }))
 }
