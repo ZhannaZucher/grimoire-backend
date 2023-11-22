@@ -104,3 +104,9 @@ exports.addBookRating = (req, res, next) => {
     })
     .catch(error => res.status(400).json({ error }))
 }
+
+exports.getBestrating = (req, res, next) => {
+	Book.find().sort({averageRating: -1}).limit(3)
+	.then(bestrating => res.status(200).json(bestrating))
+	.catch(error => res.status(400).json({error}))
+}

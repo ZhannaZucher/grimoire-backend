@@ -13,6 +13,8 @@ router.put("/:id", auth, multer, imgResize, booksCtrl.modifyBook)
 
 router.delete("/:id", auth, booksCtrl.deleteBook)
 
+router.get("/bestrating", booksCtrl.getBestrating)
+
 router.get("/:id", booksCtrl.getOneBook)
 
 router.get("/", booksCtrl.getAllBooks)
