@@ -4,7 +4,7 @@ info:
   title: Le Vieux Grimoire API documentation
   description: Proposed API endpoints for Le Vieux Grimoire app
 paths:
-  /auth/login:
+  /api/auth/login:
     post:
       tags:
         - User Module
@@ -29,7 +29,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /auth/signup:
+  /api/auth/signup:
     post:
       tags:
         - User Module
@@ -53,7 +53,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /books:
+  /api/books:
     get:
       tags:
         - Books Module
@@ -69,7 +69,7 @@ paths:
         '400':
           description: Bad Request
 
-  /books/{id}:
+  /api/books/{id}:
     get:
       tags:
         - Books Module
@@ -87,7 +87,7 @@ paths:
         '404':
           description: Not found 
 
-  /books/bestrating:
+  /api/books/bestrating:
     get:
       tags:
         - Books Module
@@ -103,7 +103,7 @@ paths:
         '400':
           description: Bad Request
 
-  /bookss:
+  /api/bookss:
     post:
       tags:
         - Books Module
@@ -132,7 +132,7 @@ paths:
         '400':
           description: Bad Request
 
-  /bookss/{id}:
+  /api/bookss/{id}:
     put:
       tags:
         - Books Module
@@ -164,7 +164,7 @@ paths:
         '400':
           description: Bad Request
 
-  /booksss/{id}:
+  /api/booksss/{id}:
     delete:
       tags:
         - Books Module
@@ -190,7 +190,7 @@ paths:
         '400':
           description: Bad Request
 
-  /books/{id}/rating:
+  /api/books/{id}/rating:
     post:
       tags:
         - Books Module
@@ -220,7 +220,7 @@ paths:
           description: Bad Request
 
 servers:
-  - url: localhost:4000/api
+  - url: localhost:4000
 components:
   securitySchemes:
     bearerAuth:
