@@ -1,0 +1,325 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Le Vieux Grimoire API documentation
+  description: Proposed API endpoints for Le Vieux Grimoire app
+paths:
+  /auth/login:
+    post:
+      tags:
+        - User Module
+      summary: Login
+      description: API for Login
+      requestBody:
+        required: true
+        description: Login Payload
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+      responses:
+        '200':
+          description: User login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          $ref: '#/components/responses/InvalidCredentialsError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /auth/signup:
+    post:
+      tags:
+        - User Module
+      summary: Signup
+      description: API for Signup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Signup'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignupResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /books:
+    get:
+      tags:
+        - Books Module
+      summary: all posted books API
+      description: API for fetching all books
+      responses: 
+        '200':
+          description: Books data retrieved successully
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Books'
+        '400':
+          description: Bad Request
+
+  /books/{id}:
+    get:
+      tags:
+        - Books Module
+      summary: get a specific book 
+      description: API for fetching a specific book
+      parameters: 
+        - $ref: '#/components/parameters/bookId'
+      responses: 
+        '200':
+          description: Book data retrieved successully
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: Not found 
+
+  /books/bestrating:
+    get:
+      tags:
+        - Books Module
+      summary: bestrated books 
+      description: API for fetching 3 bestrated books
+      responses: 
+        '200':
+          description: Books data retrieved successfully
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Books'
+        '400':
+          description: Bad Request
+
+  /bookss:
+    post:
+      tags:
+        - Books Module
+      summary: post a book
+      description: API for publishing a book
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/securityHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+      responses: 
+        '201':
+          description: Book created successfully
+          content: 
+            application/json:
+              schema: 
+               type: object
+               properties: 
+                message:
+                 type: string
+        '400':
+          description: Bad Request
+
+  /bookss/{id}:
+    put:
+      tags:
+        - Books Module
+      summary: update a specific book
+      description: API for updating a specific posted book
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/securityHeader'
+        - $ref: '#/components/parameters/bookId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+      responses: 
+        '200':
+          description: Book updated successfully
+          content: 
+            application/json:
+              schema: 
+               type: object
+               properties: 
+                message:
+                 type: string
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+
+  /booksss/{id}:
+    delete:
+      tags:
+        - Books Module
+      summary: delete a specific book
+      description: API for deleting a specific posted book
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/securityHeader'
+        - $ref: '#/components/parameters/bookId'
+      responses: 
+        '200':
+          description: Book deleted successfully
+          content: 
+            application/json:
+              schema: 
+               type: object
+               properties: 
+                message:
+                 type: string
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+
+  /books/{id}/rating:
+    post:
+      tags:
+        - Books Module
+      summary: post a specific book's rating
+      description: API for rating a specific book
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/securityHeader'
+        - $ref: '#/components/parameters/bookId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookRating'
+      responses: 
+        '200':
+          description: Book rated successfully
+          content: 
+            application/json:
+              schema: 
+               $ref: '#/components/schemas/Book'
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+
+servers:
+  - url: localhost:4000/api
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    securityHeader:
+      in: header
+      name: securitySchemes
+      description: Attach Bearer JWT token
+      schema:
+        type: string
+      required: true
+    bookId:
+      in: path
+      name: bookId
+      required: true
+      schema:
+        type: string
+      description: The unique book identifier
+      example: "x1234"
+
+  responses:
+    InvalidCredentialsError:
+      description: Invalid credentials
+    BadRequestError:
+      description: Bad Request
+    UnauthorizedError:
+      description: Unauthorized, missing or invalid Bearer token
+    NotFoundError:
+      description: Not found
+    InternalServerError:
+      description: Internal server error
+  schemas:
+    Signup:
+      type: object
+      properties:
+        email:
+          type: string
+          description: user email
+        password:
+          type: string
+          description: user password
+    Login:
+      type: object
+      properties:
+        email:
+          type: string
+          description: user email
+        password:
+          type: string
+          description: user password
+    SignupResponse:
+      type: object
+      properties:
+        message:
+          type: string
+    LoginResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+        token:
+          type: string
+    Books:
+      type: array
+      items:
+        $ref: '#/components/schemas/Book'
+    Book: 
+      type: object
+      properties:
+        userId: 
+          type: string
+        title:
+          type: string
+        author: 
+          type: string
+        imageUrl:
+          type: string
+        year: 
+          type: integer
+        genre:
+          type: string
+        ratings: 
+          type: array
+          items: 
+            type: object
+            properties: 
+              userId:
+                type: string
+              grade: 
+                type: integer
+        averageRating: 
+          type: integer
+    BookRating:
+      type: object
+      properties:
+        userId: 
+          type: string
+        rating: 
+          type: integer

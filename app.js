@@ -4,6 +4,9 @@ const mongoose = require("mongoose")
 const booksRoutes = require("./routes/books")
 const userRoutes = require("./routes/user")
 const path = require('path')
+const swaggerUi = require("swagger-ui-express")
+const yaml = require("yamljs")
+const swaggerDocs = yaml.load("./swagger.yaml")
 
 mongoose.connect(`mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PWD}@${process.env.MONGODB_DOMAIN}`,
   { useNewUrlParser: true,
@@ -23,6 +26,11 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
   next()
 })
+
+// API Documentation
+if (process.env.NODE_ENV !== 'production') {
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
+}
 
 app.use("/api/books", booksRoutes)
 app.use("/api/auth", userRoutes)
